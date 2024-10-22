@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Factura</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 40px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 30px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .product-group {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-group label {
+            font-size: 13px;
+        }
+
+        .product-group input {
+            padding: 10px;
+        }
+
+        .product-group:nth-child(even) {
+            background-color: #f1f3f5;
+        }
+
+        /* Media query for responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            input, select {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generar Factura</h1>
+        <form action="{{ url_for('generar_factura') }}" method="POST">
+            <!-- Sección de datos del cliente -->
+            <h2>Datos del Cliente</h2>
+            <label for="nombre_cliente">Nombre del Cliente:</label>
+            <input type="text" id="nombre_cliente" name="nombre_cliente" required>
+
+            <label for="dni_cliente">DNI:</label>
+            <input type="text" id="dni_cliente" name="dni_cliente" required>
+
+            <label for="ruc_cliente">RUC:</label>
+            <input type="text" id="ruc_cliente" name="ruc_cliente">  <!-- RUC ya no es obligatorio -->
+
+            <label for="telefono_cliente">Teléfono:</label>
+            <input type="text" id="telefono_cliente" name="telefono_cliente" required>
+
+            <label for="direccion_cliente">Dirección:</label>
+            <input type="text" id="direccion_cliente" name="direccion_cliente" required>
+
+            <label for="moneda">Moneda:</label>
+            <select id="moneda" name="moneda" required>
+                <option value="PEN">Soles (PEN)</option>
+                <option value="USD">Dólares (USD)</option>
+            </select>
+
+            <!-- Sección de productos (solo 3 productos) -->
+            <h2>Productos</h2>
+            {% for i in range(1, 4) %}  <!-- Solo 3 productos -->
+                <div class="product-group">
+                    <label for="producto_{{ i }}">Producto {{ i }}:</label>
+                    <input type="text" id="producto_{{ i }}" name="producto_{{ i }}">
+
+                    <label for="cantidad_{{ i }}">Cantidad:</label>
+                    <input type="number" id="cantidad_{{ i }}" name="cantidad_{{ i }}" value="1" min="1">
+
+                    <label for="precio_{{ i }}">Precio Unitario:</label>
+                    <input type="number" step="0.01" id="precio_{{ i }}" name="precio_{{ i }}" value="0.00" min="0.00">
+                </div>
+            {% endfor %}
+
+            <button type="submit">Generar Factura</button>
+        </form>
+
+        <!-- Botón para acceder a la lista de facturas -->
+        <form action="{{ url_for('listar_facturas') }}">
+            <button type="submit" style="margin-top: 10px;">Ver Facturas Generadas</button>
+        </form>
+    </div>
+</body>
+</html>
